@@ -1,9 +1,27 @@
-import streamlit as st
+from pathlib import Path
 
-st.title("AI 해커톤")
-st.write("Streamlit 실행 테스트")
+from flask import Flask, render_template
 
-topic = st.text_input("분석할 주제를 입력하세요")
 
-if st.button("분석 시작"):
-    st.write("입력한 주제:", topic)
+app = Flask(__name__)
+
+
+BASE_DIR = Path(__file__).resolve().parent
+SAMPLE_MARKDOWN_PATH = BASE_DIR / "content" / "sample.md"
+
+
+@app.route("/")
+def home():
+
+    document_markdown = SAMPLE_MARKDOWN_PATH.read_text(
+        encoding="utf-8"
+    )
+
+    return render_template(
+        "index.html",
+        document_markdown=document_markdown
+    )
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
