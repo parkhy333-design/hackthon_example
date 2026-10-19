@@ -28,6 +28,10 @@ body {
     line-height: 1.65;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 button,
 textarea,
 input,
@@ -223,6 +227,35 @@ select {
     color: #666;
 }
 
+.project-demo-link {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 20px;
+}
+
+
+.project-demo-button {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 9px 16px;
+
+    border: 1px solid var(--color-primary);
+    border-radius: 8px;
+
+    color: var(--color-primary);
+
+    font-size: 0.9rem;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+
+.project-demo-button:hover {
+    background: var(--color-soft);
+}
 
 /* ==================================================
    SECTION

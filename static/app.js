@@ -430,6 +430,12 @@ const demoTypingInputs = document.querySelectorAll(
     ".demo-typing-input"
 );
 
+const isTouchDevice =
+    window.matchMedia(
+        "(pointer: coarse)"
+    ).matches;
+
+
 demoTypingInputs.forEach((input) => {
 
     const demoText = input.dataset.demoText;
@@ -437,9 +443,56 @@ demoTypingInputs.forEach((input) => {
     let typingStarted = false;
     let typedLength = 0;
 
+    input.readOnly =
+        !isTouchDevice;
 
-    /* 실제 문자 입력 자체를 차단 */
-    input.readOnly = true;
+    /* 모바일 가짜 타이핑 */
+    input.addEventListener(
+        "input",
+        () => {
+
+            if (!isTouchDevice) {
+                return;
+            }
+
+
+            if (!typingStarted) {
+
+                typingStarted = true;
+                typedLength = 0;
+
+            }
+
+
+            if (typedLength < demoText.length) {
+
+                typedLength += 1;
+
+            }
+
+
+            input.value =
+                demoText.slice(
+                    0,
+                    typedLength
+                );
+
+
+            const caretPosition =
+                input.value.length;
+
+
+            input.setSelectionRange(
+                caretPosition,
+                caretPosition
+            );
+
+
+            input.scrollLeft =
+                input.scrollWidth;
+
+        }
+    );
 
 
     /* 입력창을 클릭하면 커서를 항상 맨 뒤로 이동 */
@@ -458,6 +511,10 @@ demoTypingInputs.forEach((input) => {
 
 
     input.addEventListener("keydown", (event) => {
+
+        if (isTouchDevice) {
+            return;
+        }
 
         /* Ctrl / Alt / Shift 등 기능키는 무시 */
         if (
@@ -634,9 +691,50 @@ if (documentAiPrompt) {
         documentAiPrompt.dataset.demoText;
 
 
-    documentAiPrompt.readOnly = true;
+    documentAiPrompt.readOnly =
+        !isTouchDevice;
 
 
+    documentAiPrompt.addEventListener(
+        "input",
+        () => {
+
+            if (!isTouchDevice) {
+                return;
+            }
+
+
+            if (!documentPromptTypingStarted) {
+
+                documentPromptTypingStarted = true;
+                documentPromptTypedLength = 0;
+
+            }
+
+
+            if (
+                documentPromptTypedLength <
+                demoPromptText.length
+            ) {
+
+                documentPromptTypedLength += 1;
+
+            }
+
+
+            documentAiPrompt.value =
+                demoPromptText.slice(
+                    0,
+                    documentPromptTypedLength
+                );
+
+
+            documentAiApplyButton.disabled =
+                documentPromptTypedLength === 0;
+
+        }
+    );
+    
     documentAiPrompt.addEventListener(
         "click",
         () => {
@@ -656,6 +754,11 @@ if (documentAiPrompt) {
     documentAiPrompt.addEventListener(
         "keydown",
         (event) => {
+
+            if (isTouchDevice) {
+                return;
+            }
+
 
             if (
                 event.ctrlKey ||
@@ -2808,6 +2911,77 @@ if (newsPdfButton) {
     );
 
 }
+
+/* ----------------------------------------------
+   Project Description → Demo
+---------------------------------------------- */
+
+const projectDemoButtons =
+    document.querySelectorAll(
+        ".project-demo-button"
+    );
+
+
+projectDemoButtons.forEach(
+    (button) => {
+
+        button.addEventListener(
+            "click",
+            (event) => {
+
+                event.preventDefault();
+
+
+                const descriptionPanel =
+                    button.closest(
+                        ".content-panel"
+                    );
+
+                if (!descriptionPanel) {
+                    return;
+                }
+
+
+                const project =
+                    descriptionPanel.dataset.project;
+
+                const demoNavButton =
+                    document.querySelector(
+                        `.nav-button[data-project="${project}"][data-view="demo"]`
+                    );
+
+                if (!demoNavButton) {
+                    return;
+                }
+
+
+                demoNavButton.click();
+
+
+                requestAnimationFrame(
+                    () => {
+
+                        const target =
+                            document.querySelector(
+                                button.getAttribute("href")
+                            );
+
+                        if (target) {
+
+                            target.scrollIntoView({
+                                block: "start"
+                            });
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
 
 /* ----------------------------------------------
    Initial State
