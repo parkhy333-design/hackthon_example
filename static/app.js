@@ -361,7 +361,9 @@ reanalyzeButtons.forEach((button) => {
 
         const currentValue = input.value.trim();
         const originalValue = input.dataset.original;
-
+        const wasEdited =
+        input.dataset.demoEdited ===
+        "true";
 
         /* 빈 값 */
         if (!currentValue) {
@@ -371,8 +373,10 @@ reanalyzeButtons.forEach((button) => {
 
 
         /* 수정하지 않고 다시 분석 */
-        if (currentValue === originalValue) {
-
+        if (
+            currentValue === originalValue &&
+            !wasEdited
+        ) {
             badge.textContent = "확인 필요";
 
             badge.classList.remove(
@@ -413,7 +417,11 @@ reanalyzeButtons.forEach((button) => {
         suggestion.textContent =
             button.dataset.suggestion;
        
-        input.dataset.original = currentValue;
+        input.dataset.original =
+            currentValue;
+
+        input.dataset.demoEdited =
+            "false";
 
         updateRfpStatusSummary();
     });
@@ -463,6 +471,8 @@ demoTypingInputs.forEach((input) => {
 
             }
 
+            input.dataset.demoEdited =
+                "true";
 
             if (typedLength < demoText.length) {
 
@@ -734,7 +744,7 @@ if (documentAiPrompt) {
 
         }
     );
-    
+
     documentAiPrompt.addEventListener(
         "click",
         () => {
